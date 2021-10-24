@@ -1,10 +1,12 @@
 import type { AWS } from '@serverless/typescript';
-
 import {
   lambdaDeleteSlot,
   lambdaPostSlot,
   lambdaGetSlots
 } from '@functions/bookings';
+import {
+  lambdaPostPromotion
+} from '@functions/promotions';
 
 import dynamoDbTables from './dynamodb-tables';
 
@@ -19,6 +21,8 @@ const serverlessConfiguration: AWS = {
     region: '${opt:region, self:provider.region}',
     stage: '${opt:stage, self:provider.stage}',
     bookings_table: '${self:service}-bookings-table-${opt:stage, self:provider.stage}',
+    rooms_table: '${self:service}-rooms-table-${opt:stage, self:provider.stage}',
+    promotions_table: '${self:service}-promotions-table-${opt:stage, self:provider.stage}',
     table_throughputs: {
       prod: 5,
       default: 1,
@@ -62,6 +66,8 @@ const serverlessConfiguration: AWS = {
       REGION: '${self:custom.region}',
       STAGE: '${self:custom.stage}',
       BOOKINGS_TABLE: '${self:custom.bookings_table}',
+      ROOMS_TABLE: '${self:custom.rooms_table}',
+      PROMOTIONS_TABLE: '${self:custom.promotions_table}',
     },
     lambdaHashingVersion: '20201221',
     iamRoleStatements: [
@@ -83,7 +89,7 @@ const serverlessConfiguration: AWS = {
     ]
   },
   // import the function via paths
-  functions: { lambdaDeleteSlot, lambdaPostSlot, lambdaGetSlots },
+  functions: { lambdaDeleteSlot, lambdaPostSlot, lambdaGetSlots, lambdaPostPromotion },
   resources: {
     Resources: dynamoDbTables
   }
